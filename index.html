@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Astigmatism Test</title>
+<style>
+	html {
+		height: 100%;
+		width: 100%;
+	}
+	body {
+		height: 100%;
+		width: 100%;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	svg {
+		display: block;
+	}
+	line {
+		stroke: black;
+		stroke-width: 1px;
+	}
+	circle {
+		fill: red;
+	}
+	text {
+		fill: black;
+	}
+</style>
+</head>
+<body>
+
+<svg id="svg1"></svg>
+
+<script>
+	const svg = document.getElementById("svg1");
+	const html = document.getElementsByTagName("html")[0];
+	const height = html.clientHeight;
+	const width = html.clientWidth;
+	const side = Math.min(height, width);
+	const halfSide = Math.floor(side / 2);
+
+	svg.style.width = side + "px";
+	svg.style.height = side + "px";
+	svg.innerHTML = "";
+
+	const lines = 18;
+	appendLines(lines);
+	appendDegrees();
+
+	function appendDegrees() {
+		for (let i = 0; i <= lines; i++) {
+			const y = halfSide - halfSide * 0.95 * Math.sin(Math.PI*i/lines);
+			const x = halfSide - halfSide * 0.95 * Math.cos(Math.PI*i/lines);
+			let degree = (90 + i * 10) % 180;
+			if (degree === 0)
+				degree = 180;
+			const txt = makeText(x, y, degree);
+			svg.appendChild(txt);
+			centerText(txt, x, y);
+		}
+	}
+
+	function makeText(x, y, text) {
+		const el = document.createElementNS("http://www.w3.org/2000/svg", "text");
+		el.setAttribute("x", x);
+		el.setAttribute("y", y);
+		el.style.fontSize = `${halfSide * 0.09}px`;
+		el.textContent = text;
+		return el;
+	}
+
+	function centerText(text, x, y) {
+		const box = text.getBBox();
+		text.setAttribute("x", x - box.width / 2);
+		text.setAttribute("y", y + box.height / 4)
+	}
+
+	function appendLines(lines) {
+		for (let i = 0; i < lines; i++) {
+			const y = halfSide * 0.88 * Math.sin(Math.PI*i/lines);
+			const x = halfSide * 0.88 * Math.cos(Math.PI*i/lines);
+			svg.appendChild(makeLine(halfSide-x,halfSide+y,halfSide+x,halfSide-y));
+		}
+	}
+
+	function makeLine(x1, y1, x2, y2) {
+		const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+		line.setAttribute("x1", x1);
+		line.setAttribute("y1", y1);
+		line.setAttribute("x2", x2);
+		line.setAttribute("y2", y2);
+		return line;
+	}
+
+</script>
+
+</body>
+</html>
